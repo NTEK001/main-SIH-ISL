@@ -19,7 +19,7 @@ import time
 global sentence, last_detected_gesture, last_update_time
 sentence = ""  # Initialize the sentence variable as an empty string
 last_detected_gesture = None
-last_update_time = 0
+last_update_time = 3
 
 
 def rounded_pixmap(image_pixmap):
@@ -142,26 +142,33 @@ class worker2(QThread):
                         hGap = math.ceil((imgSize - hCal) / 2)
                         imgWhite[hGap: hCal + hGap, :] = imgResize
 
+                    # Time delay between predictions (in seconds)
+                    prediction_delay = 2.0  # Change this to set the delay between predictions
+
                     # Make the prediction
                     prediction, index = classifier.getPrediction(imgWhite, draw=False)
                     label = labels[index % len(labels)]
                     current_gesture = label
                     current_time = time.time()
 
-                    # Allow repeated letters but prevent continuous repetition
-                    if current_gesture != last_detected_gesture or (
-                            current_gesture == last_detected_gesture and current_time - last_update_time >= repeat_delay):
-                        last_detected_gesture = current_gesture
-                        last_update_time = current_time
-                        sentence += current_gesture
+                    # Only allow new prediction after the specified delay
+                    if current_time - last_update_time >= prediction_delay:
+                        # Allow repeated letters but prevent continuous repetition
+                        if current_gesture != last_detected_gesture or (
+                                current_gesture == last_detected_gesture and current_time - last_update_time >= repeat_delay):
+                            last_detected_gesture = current_gesture
+                            last_update_time = current_time
+                            sentence += current_gesture
 
-                        self.TextUpdate.emit(sentence)
+                            # Emit the updated sentence (assuming you have a signal-slot mechanism)
+                            self.TextUpdate.emit(sentence)
 
-                    # Display the prediction and bounding box
-                    cv2.rectangle(imgOutput, (x - offset, y - offset - 70), (x + 200, y - offset + 50), (0, 255, 0),
-                                  cv2.FILLED)
-                    cv2.putText(imgOutput, label, (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 0, 0), 2)
-                    cv2.rectangle(imgOutput, (x - offset, y - offset), (x + w + offset, y + h + offset), (0, 255, 0), 4)
+                        # Display the prediction and bounding box
+                        cv2.rectangle(imgOutput, (x - offset, y - offset - 70), (x + 200, y - offset + 50), (0, 255, 0),
+                                      cv2.FILLED)
+                        cv2.putText(imgOutput, label, (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 0, 0), 2)
+                        cv2.rectangle(imgOutput, (x - offset, y - offset), (x + w + offset, y + h + offset),
+                                      (0, 255, 0), 4)
 
                 # If two hands are detected, combine them into a single entity
                 elif len(hands) == 2:
@@ -196,26 +203,33 @@ class worker2(QThread):
                         hGap = math.ceil((imgSize - hCal) / 2)
                         imgWhite[hGap: hCal + hGap, :] = imgResize
 
+                    # Time delay between predictions (in seconds)
+                    prediction_delay = 2.0  # Change this to set the delay between predictions
+
                     # Make the prediction
                     prediction, index = classifier.getPrediction(imgWhite, draw=False)
                     label = labels[index % len(labels)]
                     current_gesture = label
                     current_time = time.time()
 
-                    # Allow repeated letters but prevent continuous repetition
-                    if current_gesture != last_detected_gesture or (
-                            current_gesture == last_detected_gesture and current_time - last_update_time >= repeat_delay):
-                        last_detected_gesture = current_gesture
-                        last_update_time = current_time
-                        sentence += current_gesture
+                    # Only allow new prediction after the specified delay
+                    if current_time - last_update_time >= prediction_delay:
+                        # Allow repeated letters but prevent continuous repetition
+                        if current_gesture != last_detected_gesture or (
+                                current_gesture == last_detected_gesture and current_time - last_update_time >= repeat_delay):
+                            last_detected_gesture = current_gesture
+                            last_update_time = current_time
+                            sentence += current_gesture
 
-                        self.TextUpdate.emit(sentence)
+                            # Emit the updated sentence (assuming you have a signal-slot mechanism)
+                            self.TextUpdate.emit(sentence)
 
-                    # Display the prediction and bounding box
-                    cv2.rectangle(imgOutput, (x - offset, y - offset - 70), (x + 200, y - offset + 50), (0, 255, 0),
-                                  cv2.FILLED)
-                    cv2.putText(imgOutput, label, (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 0, 0), 2)
-                    cv2.rectangle(imgOutput, (x - offset, y - offset), (x + w + offset, y + h + offset), (0, 255, 0), 4)
+                        # Display the prediction and bounding box
+                        cv2.rectangle(imgOutput, (x - offset, y - offset - 70), (x + 200, y - offset + 50), (0, 255, 0),
+                                      cv2.FILLED)
+                        cv2.putText(imgOutput, label, (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 0, 0), 2)
+                        cv2.rectangle(imgOutput, (x - offset, y - offset), (x + w + offset, y + h + offset),
+                                      (0, 255, 0), 4)
 
     def speekbuttonclicked(self):
         global sentence
@@ -227,3 +241,6 @@ class worker2(QThread):
                 os.remove("sentence.mp3")
             except Exception as e:
                 print(f"Error occurred: {e}")
+
+
+
