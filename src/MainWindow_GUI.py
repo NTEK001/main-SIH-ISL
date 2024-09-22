@@ -52,6 +52,18 @@ class Ui_Form(object):
         self.pushButton.setStyleSheet(u"QPushButton{\n"
 "color: black\n"
 "}")
+        self.pushButton_2 = QPushButton(self.frame)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.setGeometry(QRect(420, 50, 100, 32))
+        self.pushButton_2.setStyleSheet(u"QPushButton{\n"
+"color: black\n"
+"}")
+        self.pushButton_3 = QPushButton(self.frame)
+        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.pushButton_3.setGeometry(QRect(420, 90, 100, 32))
+        self.pushButton_3.setStyleSheet(u"QPushButton{\n"
+"color: black\n"
+"}")
 
         self.retranslateUi(Form)
 
@@ -62,5 +74,7 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.label.setText("")
         self.pushButton.setText(QCoreApplication.translate("Form", u"Speech", None))
+        self.pushButton_2.setText(QCoreApplication.translate("Form", u"\u092c\u094b\u0932\u093f\u092f\u0947", None))
+        self.pushButton_3.setText(QCoreApplication.translate("Form", u"\u0baa\u0bc7\u0b9a\u0bc1", None))
     # retranslateUi
 
